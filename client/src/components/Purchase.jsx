@@ -4,6 +4,7 @@ import { FaEdit } from 'react-icons/fa'
 import { CgInsertAfterO } from 'react-icons/cg'
 import { ImCross } from 'react-icons/im'
 import { nanoid } from 'nanoid'
+import PieChartPurchase from './PieChartPurchase'
 
 const Purchase = (props) => {
 	const [purchase, setPurchase] = useState(props.purchase)
@@ -109,8 +110,9 @@ const Purchase = (props) => {
 				</div>
 
 				<div className='flex gap-[30px] justify-center mt-[10px]'>
-					<div className='w-[400px] h-[400px] bg-gray-700 rounded-[20px]'></div> {/* Pie Chart */}
-					<div className='w-[600px] h0[400px] bg-gray-700 rounded-[20px]'></div> {/* Line Chart */}
+					<div className='w-[400px] h-[400px] bg-gray-700 rounded-[20px] p-[10px]'>
+						<PieChartPurchase data={purchase} />
+					</div>
 				</div>
 
 				<div className='flex justify-center mt-[20px]'>
