@@ -7,9 +7,9 @@ const PieChart = (props) => {
     console.log(props.data);
     const purchaseData = props.data.reduce((acc, item) => {
         if (acc[item.product]) {
-          acc[item.product] += item.price;
+          acc[item.product] += Number(item.price);
         } else {
-          acc[item.product] = item.price;
+          acc[item.product] = Number(item.price);
         }
         return acc;
       }, {});
