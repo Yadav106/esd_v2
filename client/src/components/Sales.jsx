@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { MdDelete } from 'react-icons/md'
 import { FaEdit } from 'react-icons/fa'
 import { CgInsertAfterO } from 'react-icons/cg'
+import { ImCross } from 'react-icons/im'
 import { nanoid } from 'nanoid'
 
 const Sales = (props) => {
@@ -11,6 +12,7 @@ const Sales = (props) => {
 	const [price, setPrice] = useState(0)
 	const [name, setName] = useState('')
 	const [edit, setEdit] = useState(false)
+	const [editId, setEditId] = useState('')
 	const [add, setAdd] = useState(false)
 
 	async function addSale() {
@@ -37,6 +39,40 @@ const Sales = (props) => {
 		setQuantity(0)
 		setPrice(0)
 		setName('')
+	}
+
+	const updateSale = async (id) => {
+		const url = 'http://localhost:5001/update_sale';
+		const data = {
+			product: product,
+			quantity: quantity,
+			price: price,
+			name: name,
+			id: id
+		}
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+		const json = await response.json()
+		console.log(json)
+		const newSales = sales.map((sale) => {
+			if (sale.id === id) {
+				return data
+			} else {
+				return sale
+			}
+		})
+		setSales(newSales)
+		setEdit(false)
+		setProduct('')
+		setQuantity(0)
+		setPrice(0)
+		setName('')
+		setEditId('')
 	}
 
 	const deleteSale = async (id) => {
@@ -78,10 +114,10 @@ const Sales = (props) => {
 						{
 							add &&
 							<div className='flex gap-[10px] mb-[10px]'>
-								<input type='text' placeholder='Product' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setProduct(e.target.value)}/>
-								<input type='number' placeholder='Quantity' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setQuantity(e.target.value)}/>
-								<input type='number' placeholder='Price' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setPrice(e.target.value)}/>
-								<input type='text' placeholder='Customer' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setName(e.target.value)}/>
+								<input type='text' placeholder='Product' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setProduct(e.target.value)} required/>
+								<input type='number' placeholder='Quantity' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setQuantity(e.target.value)} required/>
+								<input type='number' placeholder='Price' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setPrice(e.target.value)} required/>
+								<input type='text' placeholder='Customer' className='rounded-[10px] p-[10px] text-black' onChange={(e) => setName(e.target.value)} required/>
 								<button className='rounded-[10px] p-[10px] bg-blue-400 text-white' onClick={() => {
 									addSale()
 								}}>Add</button>
@@ -104,16 +140,53 @@ const Sales = (props) => {
 										return (
 											<tr key={index}>
 												<td className='text-center'>{index+1}</td>
-												<td className='text-center'>{sale.product}</td>
-												<td className='text-center'>{sale.quantity}</td>
-												<td className='text-center'>{sale.price}</td>
-												<td className='text-center'>{sale.name}</td>
-												<td className='text-center flex justify-center gap-[10px]'>
-													<FaEdit className='text-[25px] text-green-500 cursor-pointer'/>
-													<MdDelete className='text-[25px] text-red-500 cursor-pointer'
-														onClick={() => deleteSale(sale.id)}
-													/>
-												</td>
+												{
+													edit && editId === sale.id ?
+													<>
+														<td className='text-center'>
+															<input type='text' placeholder='Product' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setProduct(e.target.value)} value={product}/>
+														</td>
+														<td className='text-center'>
+															<input type='number' placeholder='Quantity' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setQuantity(e.target.value)} value={quantity}/>
+														</td>
+														<td className='text-center'>
+															<input type='number' placeholder='Price' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setPrice(e.target.value)} value={price}/>
+														</td>
+														<td className='text-center'>
+															<input type='text' placeholder='Seller' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setName(e.target.value)} value={name}/>
+														</td>
+														<td className='text-center flex justify-center gap-[10px]'>
+															<FaEdit className='text-[25px] text-green-500 cursor-pointer'
+																onClick={() => updateSale(sale.id)}
+															/>
+															<ImCross className='text-[20px] text-red-500 cursor-pointer'
+																onClick={() => setEdit(false)}
+															/>
+														</td>
+													</>
+													:
+													<>
+														<td className='text-center'>{sale.product}</td>
+														<td className='text-center'>{sale.quantity}</td>
+														<td className='text-center'>{sale.price}</td>
+														<td className='text-center'>{sale.name}</td>
+														<td className='text-center flex justify-center gap-[10px]'>
+															<FaEdit className='text-[25px] text-green-500 cursor-pointer'
+																onClick={() => {
+																	setProduct(sale.product)
+																	setQuantity(sale.quantity)
+																	setPrice(sale.price)
+																	setName(sale.name)
+																	setEdit(true)
+																	setEditId(sale.id)
+																}}
+															/>
+															<MdDelete className='text-[25px] text-red-500 cursor-pointer'
+																onClick={() => deleteSale(sale.id)}
+															/>
+														</td>
+													</>
+												}
 											</tr>
 										)
 									})

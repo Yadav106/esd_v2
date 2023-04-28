@@ -84,6 +84,33 @@ app.put('/delete_sale', async (req, res) => {
     }
 });
 
+app.put('/update_sale', async (req, res) => {
+    try {
+        const body = req.body;
+        console.log(body);
+        const product = body['product'];
+        const quantity = body['quantity'];
+        const price = body['price'];
+        const name = body['name'];
+        const id = body['id'];
+
+        const sales = {
+            product: product,
+            quantity: Number(quantity),
+            price: Number(price),
+            name: name,
+            id: id
+        }
+
+        result = await collection.updateOne({ username: "Yadav", "sales.id": id }, { $set : { "sales.$": sales } });
+        console.log(result);
+        res.json({ message: 'Sale item edited!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 app.put('/add_purchase', async (req, res) => {
     try {
         const body = req.body;
@@ -120,6 +147,33 @@ app.put('/delete_purchase', async (req, res) => {
         const result = await collection.updateOne({ username: "Yadav" }, { $pull : { "purchase": {'id': id} } });
         console.log(result);
         res.json({ message: 'Purchase item deleted!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+app.put('/update_purchase', async (req, res) => {
+    try {
+        const body = req.body;
+        console.log(body);
+        const product = body['product'];
+        const quantity = body['quantity'];
+        const price = body['price'];
+        const name = body['name'];
+        const id = body['id'];
+
+        const purchase = {
+            product: product,
+            quantity: Number(quantity),
+            price: Number(price),
+            name: name,
+            id: id
+        }
+
+        result = await collection.updateOne({ username: "Yadav", "purchase.id": id }, { $set : { "purchase.$": purchase } });
+        console.log(result);
+        res.json({ message: 'Purchase item edited!' });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server Error' });

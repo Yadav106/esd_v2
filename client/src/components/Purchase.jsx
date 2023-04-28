@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { MdDelete } from 'react-icons/md'
 import { FaEdit } from 'react-icons/fa'
 import { CgInsertAfterO } from 'react-icons/cg'
+import { ImCross } from 'react-icons/im'
 import { nanoid } from 'nanoid'
 
 const Purchase = (props) => {
@@ -12,6 +13,7 @@ const Purchase = (props) => {
 	const [name, setName] = useState('')
 	const [edit, setEdit] = useState(false)
 	const [add, setAdd] = useState(false)
+	const [editId, setEditId] = useState('')
 
 	async function addPurchase() {
 		const url = 'http://localhost:5001/add_purchase';
@@ -58,6 +60,47 @@ const Purchase = (props) => {
         setPurchase(newPurchase)
     }
 
+	const editPurchase = async (id) => {
+		const url = 'http://localhost:5001/update_purchase';
+		const data = {
+			product: product,
+			quantity: quantity,
+			price: price,
+			name: name,
+			id: id
+		}
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+		const json = await response.json()
+		console.log(json)
+		const newPurchase = purchase.map((purchase) => {
+			if (purchase.id === id) {
+				return {
+					product: product,
+					quantity: quantity,
+					price: price,
+					name: name,
+					id: id
+				}
+			} else {
+				return purchase
+			}
+		})
+		setPurchase(newPurchase)
+		setEdit(false)
+		setProduct('')
+		setQuantity(0)
+		setPrice(0)
+		setName('')
+		setEditId('')
+	}
+
+
 	return (
 		<div className='text-white'>
 			<div className='flex flex-col'>
@@ -90,14 +133,14 @@ const Purchase = (props) => {
 						}
 						<table className='w-full rounded-[10px] bg-gray-500'>
 							<thead>
-								<tr>
-									<th className='p-[20px]'>No.</th>
-									<th className='p-[20px]'>Product</th>
-									<th className='p-[20px]'>Quantity</th>
-									<th className='p-[20px]'>Price</th>
-									<th className='p-[20px]'>Seller</th>
-									<th className='p-[20px]'>Action</th> {/* Edit, Delete */}
-								</tr>
+									<tr>
+										<th className='p-[20px]'>No.</th>
+										<th className='p-[20px]'>Product</th>
+										<th className='p-[20px]'>Quantity</th>
+										<th className='p-[20px]'>Price</th>
+										<th className='p-[20px]'>Seller</th>
+										<th className='p-[20px]'>Action</th> {/* Edit, Delete */}
+									</tr>
 							</thead>
 							<tbody>
 								{
@@ -105,16 +148,54 @@ const Purchase = (props) => {
 										return (
 											<tr key={index}>
 												<td className='text-center'>{index+1}</td>
-												<td className='text-center'>{item.product}</td>
-												<td className='text-center'>{item.quantity}</td>
-												<td className='text-center'>{item.price}</td>
-												<td className='text-center'>{item.name}</td>
-												<td className='text-center flex justify-center gap-[10px]'>
-													<FaEdit className='text-[25px] text-green-500 cursor-pointer'/>
-													<MdDelete className='text-[25px] text-red-500 cursor-pointer'
-                                                        onClick={() => deletePurchase(item.id)}
-                                                    />
-												</td>
+												{
+													edit && editId === item.id
+													?
+													<Fragment>
+														<td className='text-center'>
+															<input type='text' placeholder='Product' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setProduct(e.target.value)} value={product}/>
+														</td>
+														<td className='text-center'>
+															<input type='number' placeholder='Quantity' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setQuantity(e.target.value)} value={quantity}/>
+														</td>
+														<td className='text-center'>
+															<input type='number' placeholder='Price' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setPrice(e.target.value)} value={price}/>
+														</td>
+														<td className='text-center'>
+															<input type='text' placeholder='Seller' className='rounded-[10px] p-[10px] text-black w-[120px] h-[30px]' onChange={(e) => setName(e.target.value)} value={name}/>
+														</td>
+														<td className='text-center flex justify-center gap-[10px]'>
+															<FaEdit className='text-[25px] text-green-500 cursor-pointer'
+																onClick={() => editPurchase(item.id)}
+															/>
+															<ImCross className='text-[20px] text-red-500 cursor-pointer'
+																onClick={() => setEdit(false)}
+															/>
+														</td>
+													</Fragment>
+													:
+													<Fragment>
+														<td className='text-center'>{item.product}</td>
+														<td className='text-center'>{item.quantity}</td>
+														<td className='text-center'>{item.price}</td>
+														<td className='text-center'>{item.name}</td>
+														<td className='text-center flex justify-center gap-[10px]'>
+															<FaEdit className='text-[25px] text-green-500 cursor-pointer'
+																onClick={() => {
+																	setProduct(item.product)
+																	setQuantity(item.quantity)
+																	setPrice(item.price)
+																	setName(item.name)
+																	setEdit(true)
+																	setEditId(item.id)
+																}}
+															/>
+															<MdDelete className='text-[25px] text-red-500 cursor-pointer'
+																onClick={() => deletePurchase(item.id)}
+															/>
+														</td>
+													</Fragment>
+												}
 											</tr>
 										)
 									})
