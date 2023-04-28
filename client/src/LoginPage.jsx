@@ -26,7 +26,7 @@ const LoginPage = (props) => {
 
       const json = await response.json()
       if (json.status === 'success') {
-        setData(json.data)
+        setData(json)
         setIsLogged(true)
       }
     }

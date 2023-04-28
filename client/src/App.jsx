@@ -9,6 +9,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [data, setData] = useState({})
 
+  useEffect(() => {
+    console.log(data);
+  }, [data])
+
   return (
     <div>
       {
