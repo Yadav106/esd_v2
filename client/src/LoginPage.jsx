@@ -46,11 +46,23 @@ const LoginPage = (props) => {
               <div className='flex flex-col justify-center items-center'>
                 <input type='text' placeholder='Username' className='border-2 border-gray-300 rounded-[15px] p-[10px] m-[10px] w-[300px]' 
                   onChange={(e) => setUsername(e.target.value)} value={username}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setCallBackend(callBackend + 1)
+                      }
+                    }
+                  }
                 />
                 <input type='password' placeholder='Password' className='border-2 border-gray-300 rounded-[15px] p-[10px] m-[10px] w-[300px]' 
                   onChange={(e) => setPassword(e.target.value)} value={password}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setCallBackend(callBackend + 1)
+                      }
+                    }
+                  }
                 />
-                <button className='border-2 border-gray-300 rounded-[15px] p-[10px] m-[10px] w-[300px] bg-blue-500 text-white font-bold'
+                <button className='border-2 border-gray-300 rounded-[15px] p-[10px] m-[10px] w-[300px] bg-gray-900 text-white font-bold'
                   onClick={() => setCallBackend(callBackend + 1)}
                 >
                   Login

@@ -8,7 +8,6 @@ app.use(cors())
 app.use(bodyParser.json())
 const PORT = process.env.PORT || 5001;
 
-// const collection = client.db('ESDAssignment').collection('purchase');
 const collection = client.db('esd').collection('details');
 
 app.get('/', async (req, res) => {
@@ -38,6 +37,90 @@ app.post('/authenticate', async (req, res) => {
         }
         res.json(user)
     } catch(err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+app.put('/add_sale', async (req, res) => {
+    try {
+        const body = req.body;
+        console.log(body);
+        const product = body['product'];
+        const quantity = body['quantity'];
+        const price = body['price'];
+        const name = body['name'];
+        const id = body['id'];
+
+        const sales = {
+            product: product,
+            quantity: Number(quantity),
+            price: Number(price),
+            name: name,
+            id: id
+        }
+
+        result = await collection.updateOne({ username: "Yadav" }, { $push : { "sales": sales } });
+        console.log(result);
+        res.json({ message: 'Sale item added!' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+app.put('/delete_sale', async (req, res) => {
+    try {
+        const body = req.body;
+        console.log(body);
+        const id = body['id'];
+        const result = await collection.updateOne({ username: "Yadav" }, { $pull : { "sales": {'id': id} } });
+        console.log(result);
+        res.json({ message: 'Sale item deleted!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+app.put('/add_purchase', async (req, res) => {
+    try {
+        const body = req.body;
+        console.log(body);
+        const product = body['product'];
+        const quantity = body['quantity'];
+        const price = body['price'];
+        const name = body['name'];
+        const id = body['id'];
+
+        const sales = {
+            product: product,
+            quantity: Number(quantity),
+            price: Number(price),
+            name: name,
+            id: id
+        }
+
+        result = await collection.updateOne({ username: "Yadav" }, { $push : { "purchase": sales } });
+        console.log(result);
+        res.json({ message: 'Purchase item added!' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+app.put('/delete_purchase', async (req, res) => {
+    try {
+        const body = req.body;
+        console.log(body);
+        const id = body['id'];
+        const result = await collection.updateOne({ username: "Yadav" }, { $pull : { "purchase": {'id': id} } });
+        console.log(result);
+        res.json({ message: 'Purchase item deleted!' });
+    } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server Error' });
     }

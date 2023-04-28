@@ -4,4 +4,32 @@
 
 * {
   margin: 0;
+  font-family: 'Castoro Titling', cursive;
+}
+
+input {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+@layer components {
+  .sidebar-icon {
+      @apply relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto bg-gray-800 text-green-500
+              hover:bg-green-600 hover:text-white cursor-pointer
+              rounded-3xl hover:rounded-xl
+              transition-all duration-200 ease-linear;
+  }
+
+  .sidebar-tooltip {
+      @apply absolute w-auto p-2 m-2 min-w-max left-14
+              text-white bg-gray-900
+              rounded-md shadow-md
+              text-xs font-bold
+              transition-all duration-100 scale-0 origin-left;
+  }
+
+  .sidebar-icon-selected {
+      @apply relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto bg-green-500 text-white
+              rounded-3xl hover:rounded-xl
+              transition-all duration-200 ease-linear;
+  }
 }
