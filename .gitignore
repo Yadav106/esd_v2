@@ -24,6 +24,5 @@ dist-ssr
 *.sw?
 
 # Development directories and files
-connection.js
-.env
+*.env
 
